@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quieres ser mi San Valentín? 💖</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        .font-cursive {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Animación de entrada */
+        .fade-zoom {
+            animation: fadeZoom 1s ease forwards;
+        }
+
+        @keyframes fadeZoom {
+            from { opacity: 0; transform: scale(0.7); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Corazón flotando */
+        .floating-heart {
+            position: fixed;
+            color: #fb7185;
+            font-size: 24px;
+            animation: floatUp 5s linear infinite;
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0.7;
+        }
+
+        @keyframes floatUp {
+            from { transform: translateY(105vh) scale(0.8); opacity: 0; }
+            20% { opacity: 1; }
+            to { transform: translateY(-15vh) scale(1.4); opacity: 0; }
+        }
+
+        /* Pulso del botón Sí */
+        .pulse-yes {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(var(--btn-scale, 1)); }
+            50% { transform: scale(calc(var(--btn-scale, 1) * 1.05)); }
+            100% { transform: scale(var(--btn-scale, 1)); }
+        }
+
+        /* Rebote invitación */
+        .bounce-in {
+            animation: bounceIn 0.8s cubic-bezier(0.36, 0, 0.66, -0.56) forwards;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        #yesBtn {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --btn-scale: 1;
+        }
+
+        #noBtn {
+            transition: left 0.2s ease, top 0.2s ease;
+            white-space: nowrap;
+            position: relative; /* Cambia a fixed dinámicamente */
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-200 via-rose-100 to-red-200 min-h-screen flex items-center justify-center p-4">
+
+    <!-- Contenedor para corazones flotantes -->
+    <div id="heartsContainer" class="fixed inset-0 pointer-events-none"></div>
+
+    <!-- Pantalla principal -->
+    <div id="mainCard" class="text-center fade-zoom z-10 w-full max-w-lg">
+
+        <div class="relative inline-block mb-6">
+            <img 
+                src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExanV3NTM0Nmk1MzhvdzZjMTJlNWkzaTJtNDFjam05MG9wczI2MWhqeCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/NxgjDYxluo0sRjHw80/giphy.gif"
+                class="w-44 h-44 mx-auto rounded-full border-4 border-white shadow-2xl"
+                alt="Osito tierno"
+            />
+            <div class="absolute -top-4 -right-4 text-4xl animate-bounce">💖</div>
+        </div>
+
+        <h1 class="text-4xl md:text-6xl font-bold text-rose-700 mb-8 font-cursive drop-shadow-sm">
+            ¿Queres ser mi San Valentín?
+        </h1>
+
+        <p class="text-gray-600 mb-8 italic text-lg">Pénsalo bien… no hay marcha atrás </p>
+
+        <div class="flex flex-col md:flex-row gap-8 justify-center items-center min-h-[200px]" id="buttonArea">
+
+            <!-- Botón Sí -->
+            <button 
+                id="yesBtn"
+                onclick="accept()"
+                class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-12 rounded-full shadow-2xl text-2xl pulse-yes z-50"
+            >
+                ¡SÍ! 💘
+            </button>
+
+            <!-- Botón No -->
+            <button 
+                id="noBtn"
+                onmouseover="moveNo()"
+                onclick="moveNo()"
+                class="bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 px-10 rounded-full shadow-xl text-xl z-40 touch-none"
+            >
+                No 😢
+            </button>
+
+        </div>
+
+        <p id="counter" class="mt-12 text-rose-600 font-semibold text-lg opacity-0 transition-opacity duration-500"></p>
+    </div>
+
+
+    <!-- Invitación Final -->
+    <div id="inviteCard" class="hidden max-w-md w-full bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-rose-300 bounce-in z-20">
+
+        <div class="bg-gradient-to-r from-rose-500 to-pink-500 p-8 text-center text-white relative">
+            <div class="text-5xl mb-2 animate-bounce">💌</div>
+            <h1 class="text-3xl font-cursive font-bold">¡Sabía que dirías que sí!</h1>
+        </div>
+
+        <div class="p-8 space-y-6 text-center">
+
+            <h2 class="text-2xl font-bold text-gray-800 underline decoration-rose-300">Nuestra Cita Especial</h2>
+            <p class="text-rose-600 font-medium italic">Woo 💕</p>
+
+            <div class="space-y-4 text-left">
+
+                <div class="flex items-center gap-4 p-4 bg-rose-50 rounded-xl border border-rose-100">
+                    <span class="text-2xl text-rose-500">📅</span>
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase font-bold">Fecha</p>
+                        <p class="text-lg font-semibold text-gray-700">Por definir</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-4 bg-rose-50 rounded-xl border border-rose-100">
+                    <span class="text-2xl text-rose-500">⏰</span>
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase font-bold">Hora</p>
+                        <p class="text-lg font-semibold text-gray-700">Por definir</p>
+                    </div>
+                </div>
+
+                  <div class="flex items-center gap-4 p-4 bg-rose-50 rounded-xl border border-rose-100">
+                    <span class="text-2xl text-rose-500">📍</span>
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase font-bold">Lugar</p>
+                        <p class="text-lg font-semibold text-gray-700">Por Definir</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-4 bg-rose-50 rounded-xl border border-rose-100">
+                    <span class="text-2xl text-rose-500">👗</span>
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase font-bold">Vestimenta</p>
+                        <p class="text-lg font-semibold text-gray-700">Elegante</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="py-4">
+                <p class="text-5xl font-cursive text-rose-600 font-bold animate-pulse">
+                    Te quiero mucho! ❤️
+                </p>
+            </div>
+
+            <p class="text-rose-500 font-semibold italic">No puedo esperar a verte ✨</p>
+
+        </div>
+
+        <div class="bg-rose-100 p-4 text-center text-sm text-rose-800 font-medium">
+            Hecho con amor 💞
+        </div>
+
+    </div>
+
+
+    <script>
+        const yesBtn = document.getElementById("yesBtn");
+        const noBtn = document.getElementById("noBtn");
+        const mainCard = document.getElementById("mainCard");
+        const inviteCard = document.getElementById("inviteCard");
+        const counter = document.getElementById("counter");
+        const heartsContainer = document.getElementById("heartsContainer");
+
+        let noCount = 0;
+        let currentScale = 1;
+
+        const phrases = [
+            "¿Segura? 😳",
+            "Pénsalo bien...",
+            "Nombree 🥺",
+            "Me rompes el corazón 💔",
+            "Última oportunidad 😏",
+            "Ya sabes que sí 💕",
+            "No seas cruel 😢",
+            "Acepta ya 😍",
+            "¡Es el destino! ✨",
+            "¡Di que síiiii! 💘"
+        ];
+
+        /* Interacción del botón NO corregida para funcionar múltiples veces */
+        function moveNo() {
+            noCount++;
+            
+            // Incrementar escala gradualmente
+            currentScale += 0.45;
+            yesBtn.style.setProperty('--btn-scale', currentScale);
+            yesBtn.style.transform = `scale(${currentScale})`;
+
+            // Mostrar el contador de intentos
+            counter.style.opacity = "1";
+            counter.textContent = `Has intentado decir NO ${noCount} veces 😅`;
+
+            // Forzar posición fija para que pueda saltar por toda la pantalla
+            if (noBtn.style.position !== "fixed") {
+                noBtn.style.position = "fixed";
+            }
+
+            // Cálculo de límites de pantalla
+            const padding = 20;
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+            
+            // Aseguramos que el botón siempre esté dentro de la vista
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+
+            // Cambiar texto según el intento
+            const index = Math.min(noCount - 1, phrases.length - 1);
+            noBtn.innerText = phrases[index];
+
+            // Si el botón sí es demasiado grande, el No se rinde
+            if (currentScale > 7.5) {
+                noBtn.style.display = "none";
+                counter.innerHTML = "¡Ya no podés escapar! 😏💘";
+            }
+        }
+
+        /* Acción al Aceptar */
+        function accept() {
+            mainCard.classList.add("hidden");
+            inviteCard.classList.remove("hidden");
+            startHearts();
+            
+            for(let i=0; i<10; i++) {
+                setTimeout(createHeart, i * 150);
+            }
+        }
+
+        /* Generador de corazones flotantes */
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.classList.add("floating-heart");
+            
+            const heartIcons = ["❤️", "💖", "💕", "💘", "✨"];
+            heart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.fontSize = Math.random() * 20 + 20 + "px";
+            heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+            heart.style.opacity = Math.random() * 0.5 + 0.5;
+
+            heartsContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        function startHearts() {
+            setInterval(createHeart, 400);
+        }
+
+        // Aseguramos que el botón No tenga un listener táctil para móviles
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveNo();
+        });
+    </script>
+
+</body>
+</html>
